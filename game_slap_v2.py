@@ -59,7 +59,7 @@ class GameLogic:
         q_flag = False
         
         while True:
-            raw_input = console.input('[cyan]Юнит[/cyan], защищайся!\n[ A ] - защита слева, [ D ] - защита справа ' \
+            raw_input = console.input('[cyan]Юнит[/cyan], защищайся!\n[ A ] - защита слева, [ D ] - защита справа '
                                       '[ Q ] - Бабл Паладина, если не использовал: \n').upper()
 
             if not raw_input:
@@ -190,7 +190,7 @@ class GameController:
         console.print("[magenta]Хекс бросает кубик на бабл паладина[/magenta]")
         console.print(f"[magenta]Проверка на активацию Сложность <15>, выпало: {n}[/magenta]")
 
-        if n > 15:
+        if n >= 15:
             console.print("[yellow]Хекс активирует бабл паладина и не получает урон![/yellow]\n")
             return True
         else:
