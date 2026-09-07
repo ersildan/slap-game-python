@@ -39,7 +39,11 @@ class GameLogic:
         while True:
             print("Атака слева - [ A ] или [ D ] - Атака справа")
             choice = input('Выберите действие: ').upper()
-            
+
+            if choice == 'exit'.upper():
+                print('Выход из игры')
+                exit()
+
             if not choice:
                 return None
             
@@ -62,6 +66,10 @@ class GameLogic:
             raw_input = console.input('[cyan]Юнит[/cyan], защищайся!\n[ A ] - защита слева, [ D ] - защита справа '
                                       '[ Q ] - Бабл Паладина, если не использовал: \n').upper()
 
+            if raw_input == 'exit'.upper():
+                print('Выход из игры')
+                exit()
+
             if not raw_input:
                 return None
             
@@ -76,7 +84,11 @@ class GameLogic:
         
                 while True:
                     user_input = console.input("[magenta]Нажмите [ пробел ] для броска. Сложность <15>: [/magenta]")
-                    
+
+                    if user_input == 'exit'.upper():
+                        print('Выход из игры')
+                        exit()
+
                     if user_input == " ":
                         break
                     else:
@@ -110,7 +122,7 @@ class GameLogic:
 
 class GameController:
     def __init__(self):
-        self.computer = Unit("Хекс")
+        self.computer = Unit("Компьютер")
         self.player = Unit()
         self.console = Console()
     
@@ -120,8 +132,12 @@ class GameController:
         console.print("[magenta]Бросок кубика на инициативу![/magenta]")
         
         while True:
-            user_input = input("Нажмите для броска кубика [ пробел ] + [ Enter ]\n")
-            
+            user_input = input("Нажмите для броска кубика [ пробел ] после нажмите [ Enter ]\n")
+
+            if user_input == 'exit'.upper():
+                print('Выход из игры')
+                exit()
+
             if user_input[0] == " ":
                 break
             else:
@@ -130,13 +146,13 @@ class GameController:
         player_roll = GameLogic.roll_dice()
         computer_roll = GameLogic.roll_dice()
             
-        console.print(f"[magenta]Ты выкинул < {player_roll} > vs Хекс < {computer_roll} >[/magenta]")
+        console.print(f"[magenta]Ты выкинул < {player_roll} > vs Компьютер < {computer_roll} >[/magenta]")
         
         if player_roll >= computer_roll:
             console.print("[cyan]Юнит атакует первым![/cyan]\n")
             self.player_attacks_first()
         else:
-            console.print("[red]Хекс атакует первым![/red]\n")
+            console.print("[red]Компьютер атакует первым![/red]\n")
             self.computer_attacks_first()
     
     def player_attacks_first(self):
@@ -153,22 +169,22 @@ class GameController:
 
             if self.computer.is_alive():
                 result = self.computer_attack_phase()
-                if result == 'Победил Хекс!':
-                    console.print(Panel("GAME OVER ХЕКС ПОБЕДИЛ!", style="bold red"))
+                if result == 'Победил Компьютер!':
+                    console.print(Panel("GAME OVER КОМПЬЮТЕР ПОБЕДИЛ!", style="bold red"))
                     return
 
             round_number += 1
     
     def computer_attacks_first(self):
-        """Ветка событий: Хекс атакует первым"""
+        """Ветка событий: Компьютер атакует первым"""
 
         round_number = 1
         while self.player.is_alive() and self.computer.is_alive():
             self.console.print(Panel(f"====== РАУНД {round_number} ======", style="bold green"))
 
             result = self.computer_attack_phase()
-            if result == 'Победил Хекс!':
-                console.print(Panel("GAME OVER ХЕКС ПОБЕДИЛ!", style="bold red"))
+            if result == 'ПобеКомпьютер!':
+                console.print(Panel("GAME OVER КОМПЬЮТЕР ПОБЕДИЛ!", style="bold red"))
                 return
 
             if self.player.is_alive():
@@ -180,26 +196,26 @@ class GameController:
             round_number += 1
 
     def player_attack_phase(self):
-        """Атака Юнита - Хекс защищается"""
+        """Атака Юнита - Компьютер защищается"""
 
         action1 = GameLogic.human_choose_attack()
         action2 = GameLogic.computer_choose()
 
         n = GameLogic.roll_dice()
 
-        console.print("[magenta]Хекс бросает кубик на бабл паладина[/magenta]")
+        console.print("[magenta]Компьютер бросает кубик на бабл паладина[/magenta]")
         console.print(f"[magenta]Проверка на активацию Сложность <15>, выпало: {n}[/magenta]")
 
         if n >= 15:
-            console.print("[yellow]Хекс активирует бабл паладина и не получает урон![/yellow]\n")
+            console.print("[yellow]Компьютер активирует бабл паладина и не получает урон![/yellow]\n")
             return True
         else:
             if GameLogic.check_hit(action1, action2):
-                console.print('[yellow]Бабл не активирован! Хекс делает выбор на защиту...[/yellow]')
+                console.print('[yellow]Бабл не активирован! Компьютер делает выбор на защиту...[/yellow]')
                 console.print('[bright_red]Юнит наносит 3 очка урона, точно в цель![/bright_red]')
                 self.computer.take_damage(3)
             else:
-                console.print('[yellow]Хекс не использует бабл и делает выбор на защиту...[/yellow]')
+                console.print('[yellow]Компьютер не использует бабл и делает выбор на защиту...[/yellow]')
                 console.print('[orange3]И он защищает нужную сторону и получает всего 1 урон![/orange3]')
                 self.computer.take_damage(1)
             
@@ -208,12 +224,12 @@ class GameController:
         if not self.computer.is_alive():
             return 'Победил Юнит!'
         elif not self.player.is_alive():
-            return 'Победил Хекс!'
+            return 'Победил Компьютер!'
         else:
             return True
     
     def computer_attack_phase(self):
-        """Атака Хекса - Юнит защищается"""
+        """Атака Компьютера - Юнит защищается"""
         
         computer_attack = GameLogic.computer_choose()
         player_defense = GameLogic.human_choose_defense()
@@ -225,7 +241,7 @@ class GameController:
         
         # Сравниваем атаку компьютера и защиту игрока
         if GameLogic.check_hit(computer_attack, player_defense):
-            console.print('[bright_red]Хекс наносит 3 урона![/bright_red]')
+            console.print('[bright_red]Компьютер наносит 3 урона![/bright_red]')
             self.player.take_damage(3)
         else:
             console.print('[orange3]Юнит блокирует удар и получает 1 урона![/orange3]')
@@ -234,7 +250,7 @@ class GameController:
         console.print(self.player.get_status())
 
         if not self.player.is_alive():
-            return 'Победил Хекс!'
+            return 'Победил Компьютер!'
         elif not self.computer.is_alive():
             return 'Победил Юнит!'
         return True
