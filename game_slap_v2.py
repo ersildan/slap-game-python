@@ -1,8 +1,4 @@
-from rich.console import Console
-from rich.panel import Panel
 import random
-
-console = Console()
 
 
 class Unit:
@@ -53,7 +49,7 @@ class GameLogic:
                 return choice
                    
             else:
-                console.print(f"\n[bright_red]Используй только [ A ] или [ D ]![/bright_red]")
+                print(f"\nИспользуй только [ A ] или [ D ]!")
 
     @staticmethod
     def human_choose_defense():
@@ -63,7 +59,7 @@ class GameLogic:
         q_flag = False
         
         while True:
-            raw_input = console.input('[cyan]Юнит[/cyan], защищайся!\n[ A ] - защита слева, [ D ] - защита справа '
+            raw_input = input('Юнит, защищайся!\n[ A ] - защита слева, [ D ] - защита справа '
                                       '[ Q ] - Бабл Паладина, если не использовал: \n').upper()
 
             if raw_input == 'exit'.upper():
@@ -77,13 +73,13 @@ class GameLogic:
             
             if choice == 'Q':
                 if q_flag:
-                    console.print("[bright_red]ЭЙ! Q уже использован в этом ходу! \nВыбери A или D для защиты![/bright_red]")
+                    print("ЭЙ! Q уже использован в этом ходу! \nВыбери A или D для защиты!")
                     continue
                     
-                console.print("[magenta]Бросок кубика на бабл Паладина![/magenta]")
+                print("[magenta]Бросок кубика на бабл Паладина![/magenta]")
         
                 while True:
-                    user_input = console.input("[magenta]Нажмите [ пробел ] для броска. Сложность <15>: [/magenta]")
+                    user_input = input("Нажмите [ пробел ] для броска. Сложность <15>:")
 
                     if user_input == 'exit'.upper():
                         print('Выход из игры')
@@ -92,24 +88,24 @@ class GameLogic:
                     if user_input == " ":
                         break
                     else:
-                        console.print("[bright_red]Нажмите именно [ пробел ]![/bright_red]")
+                        print("[bright_red]Нажмите именно [ пробел ]![/bright_red]")
                 
                 n = GameLogic.roll_dice()
                 
                 print(f"На кубике < {n} >")
 
                 if n > 15:
-                    console.print('[yellow]Бабл активирован! Урона нет![/yellow]')
+                    print('[yellow]Бабл активирован! Урона нет![/yellow]')
                     return True
                 else:
                     q_flag = True
-                    console.print('[yellow]Бабл не активирован! Выбери защиту вручную.\n[/yellow]')
+                    print('[yellow]Бабл не активирован! Выбери защиту вручную.\n[/yellow]')
                     continue
                     
             elif choice in ['A', 'D']:
                 return choice
             else:
-                console.print(f"[bright_red]Используй только => {', '.join(valid_keys)}![/bright_red]")
+                print(f"[bright_red]Используй только => {', '.join(valid_keys)}![/bright_red]")
 
     @staticmethod
     def computer_choose():
@@ -124,12 +120,12 @@ class GameController:
     def __init__(self):
         self.computer = Unit("Компьютер")
         self.player = Unit()
-        self.console = Console()
+        
     
     def game_loop(self):
         """Фаза 1: Определение инициативы"""
 
-        console.print("[magenta]Бросок кубика на инициативу![/magenta]")
+        print("[magenta]Бросок кубика на инициативу![/magenta]")
         
         while True:
             user_input = input("Нажмите для броска кубика [ пробел ] после нажмите [ Enter ]\n")
@@ -141,18 +137,18 @@ class GameController:
             if user_input[0] == " ":
                 break
             else:
-                console.print("[bright_red]Чтобы бросить кубик нажмите на [ пробел ][/bright_red]")
+                print("[bright_red]Чтобы бросить кубик нажмите на [ пробел ][/bright_red]")
         
         player_roll = GameLogic.roll_dice()
         computer_roll = GameLogic.roll_dice()
             
-        console.print(f"[magenta]Ты выкинул < {player_roll} > vs Компьютер < {computer_roll} >[/magenta]")
+        print(f"[magenta]Ты выкинул < {player_roll} > vs Компьютер < {computer_roll} >[/magenta]")
         
         if player_roll >= computer_roll:
-            console.print("[cyan]Юнит атакует первым![/cyan]\n")
+            print("[cyan]Юнит атакует первым![/cyan]\n")
             self.player_attacks_first()
         else:
-            console.print("[red]Компьютер атакует первым![/red]\n")
+            print("[red]Компьютер атакует первым![/red]\n")
             self.computer_attacks_first()
     
     def player_attacks_first(self):
@@ -160,17 +156,17 @@ class GameController:
 
         round_number = 1
         while self.player.is_alive() and self.computer.is_alive():
-            self.console.print(Panel(f"====== РАУНД {round_number} ======", style="bold green"))
+            print(f"====== РАУНД {round_number} ======")
 
             result = self.player_attack_phase()
             if result == 'Победил Юнит!':
-                console.print(Panel("ЮНИТ ПОБЕДИЛ!", style="bold green"))
+                print(("ЮНИТ ПОБЕДИЛ!"))
                 return
 
             if self.computer.is_alive():
                 result = self.computer_attack_phase()
                 if result == 'Победил Компьютер!':
-                    console.print(Panel("GAME OVER КОМПЬЮТЕР ПОБЕДИЛ!", style="bold red"))
+                    print(("GAME OVER КОМПЬЮТЕР ПОБЕДИЛ!"))
                     return
 
             round_number += 1
@@ -180,17 +176,17 @@ class GameController:
 
         round_number = 1
         while self.player.is_alive() and self.computer.is_alive():
-            self.console.print(Panel(f"====== РАУНД {round_number} ======", style="bold green"))
+            print((f"====== РАУНД {round_number} ======" ))
 
             result = self.computer_attack_phase()
             if result == 'ПобеКомпьютер!':
-                console.print(Panel("GAME OVER КОМПЬЮТЕР ПОБЕДИЛ!", style="bold red"))
+                print(("GAME OVER КОМПЬЮТЕР ПОБЕДИЛ!"))
                 return
 
             if self.player.is_alive():
                 result = self.player_attack_phase()
                 if result == 'Победил Юнит!':
-                    console.print(Panel("ЮНИТ ПОБЕДИЛ!", style="bold green"))
+                    print(("ЮНИТ ПОБЕДИЛ!"))
                     return
 
             round_number += 1
@@ -203,23 +199,23 @@ class GameController:
 
         n = GameLogic.roll_dice()
 
-        console.print("[magenta]Компьютер бросает кубик на бабл паладина[/magenta]")
-        console.print(f"[magenta]Проверка на активацию Сложность <15>, выпало: {n}[/magenta]")
+        print("[magenta]Компьютер бросает кубик на бабл паладина[/magenta]")
+        print(f"[magenta]Проверка на активацию Сложность <15>, выпало: {n}[/magenta]")
 
         if n >= 15:
-            console.print("[yellow]Компьютер активирует бабл паладина и не получает урон![/yellow]\n")
+            print("[yellow]Компьютер активирует бабл паладина и не получает урон![/yellow]\n")
             return True
         else:
             if GameLogic.check_hit(action1, action2):
-                console.print('[yellow]Бабл не активирован! Компьютер делает выбор на защиту...[/yellow]')
-                console.print('[bright_red]Юнит наносит 3 очка урона, точно в цель![/bright_red]')
+                print('[yellow]Бабл не активирован! Компьютер делает выбор на защиту...[/yellow]')
+                print('[bright_red]Юнит наносит 3 очка урона, точно в цель![/bright_red]')
                 self.computer.take_damage(3)
             else:
-                console.print('[yellow]Компьютер не использует бабл и делает выбор на защиту...[/yellow]')
-                console.print('[orange3]И он защищает нужную сторону и получает всего 1 урон![/orange3]')
+                print('[yellow]Компьютер не использует бабл и делает выбор на защиту...[/yellow]')
+                print('[orange3]И он защищает нужную сторону и получает всего 1 урон![/orange3]')
                 self.computer.take_damage(1)
             
-            console.print(self.computer.get_status())
+            print(self.computer.get_status())
         
         if not self.computer.is_alive():
             return 'Победил Юнит!'
@@ -236,18 +232,18 @@ class GameController:
         
         # Если игрок использовал Q и вернул True - нет урона
         if player_defense is True:
-            console.print("[green]Бабл сработал! Урона нет![/green]")
+            print("[green]Бабл сработал! Урона нет![/green]")
             return
         
         # Сравниваем атаку компьютера и защиту игрока
         if GameLogic.check_hit(computer_attack, player_defense):
-            console.print('[bright_red]Компьютер наносит 3 урона![/bright_red]')
+            print('[bright_red]Компьютер наносит 3 урона![/bright_red]')
             self.player.take_damage(3)
         else:
-            console.print('[orange3]Юнит блокирует удар и получает 1 урона![/orange3]')
+            print('[orange3]Юнит блокирует удар и получает 1 урона![/orange3]')
             self.player.take_damage(1)
         
-        console.print(self.player.get_status())
+        print(self.player.get_status())
 
         if not self.player.is_alive():
             return 'Победил Компьютер!'
